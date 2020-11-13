@@ -1,0 +1,2 @@
+yellow: #D3AD2E
+dark gray: #343A40

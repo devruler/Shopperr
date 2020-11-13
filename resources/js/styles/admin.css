@@ -1,0 +1,22 @@
+#dashboard{
+    width:100%;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #343A40;
+}
+
+a {
+    color: #343A40;
+}
+
+.carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 10;
+
+    color: #fff;
+}

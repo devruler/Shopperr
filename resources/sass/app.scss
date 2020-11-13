@@ -1,0 +1,23 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Alatsi&display=swap');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.cart {
+    position: relative;
+
+}
+
+.cart-items {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+th, td{
+    word-break: keep-all;
+}
