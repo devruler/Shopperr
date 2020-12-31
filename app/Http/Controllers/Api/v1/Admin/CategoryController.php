@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Category as CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -16,7 +17,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CategoryResource::collection(Category::orderByDesc('created_at')->withCount('products')->get());
+        return CategoryResource::collection(Category::orderByDesc('created_at')->withCount('products')->paginate(10));
     }
 
     /**
@@ -27,7 +28,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $category = new Category;
+        $category->name = Str::title($request->name);
+        $category->slug = Str::slug($request->name);
+
+        $category->save();
+
+        return response(compact('category'), 200);
     }
 
     /**
@@ -38,7 +49,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        return response(Category::where('id', $id)->withCount(['products'])->first(), 200);
     }
 
     /**
@@ -50,7 +61,19 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $categoryToUpdate = Category::findOrFail($id);
+
+        $categoryToUpdate->name = Str::title($request->name);
+
+        $categoryToUpdate->slug = Str::slug($request->name);
+
+        $categoryToUpdate->save();
+
+        return response(['message' => 'Category has been successfully updated!', 'category' => $categoryToUpdate,], 200);
     }
 
     /**
@@ -61,6 +84,10 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        $category = Category::findOrFail($id);
+        $category->delete();
+
+        return response(compact('category'), 200);
     }
 }

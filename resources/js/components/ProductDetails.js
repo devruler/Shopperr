@@ -17,8 +17,8 @@ const ProductDetails = ({ product }) => {
 
             newCart = cartItems.map(element => {
                 return element.id == product.id
-                ? { id: element.id, qty: (element.qty + 1), amount: (product.price * (element.qty + 1)).toFixed(2) }
-                : { ...element }
+                    ? { id: element.id, qty: (element.qty + 1), amount: (product.price * (element.qty + 1)).toFixed(2) }
+                    : { ...element }
             })
 
             setCartItems(newCart)
@@ -45,7 +45,7 @@ const ProductDetails = ({ product }) => {
                         <div className="card rounded-0">
                             <div className="card-body">
                                 <img className="img-fluid mb-3" style={{ maxHeight: "250px", maxWidth: "250px", objectFit: "contain" }} src={'/images/products/' + product.image} alt={product.title} />
-
+                                <hr />
                                 <h3 className="card-title">{product.title}</h3>
                                 <h4>${product.price}</h4>
 
@@ -60,14 +60,14 @@ const ProductDetails = ({ product }) => {
                     <div className="col-12 col-md-4">
                         <div className="card rounded-0">
                             <div className="card-body">
-                                <div>
-                                    <h5>Maker:</h5> {product.maker}
+                                <div className="my-2">
+                                    <p><span className="font-weight-bold">Maker:</span> {product.maker}</p>
                                 </div>
-                                <div>
-                                    <h5>Model:</h5> {product.model}
+                                <div className="my-2">
+                                    <p><span className="font-weight-bold">Model:</span> {product.model}</p>
                                 </div>
-                                <div>
-                                    <h5>Engine:</h5> {product.engine ? product.engine : "N/A"}
+                                <div className="my-2">
+                                    <p><span className="font-weight-bold">Engine:</span> {product.engine ? product.engine : "N/A"}</p>
                                 </div>
                                 <hr />
 

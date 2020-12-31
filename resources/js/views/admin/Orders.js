@@ -4,32 +4,52 @@ import AdminSidebar from '../../partials/AdminSidebar';
 import AdminNavbar from '../../partials/AdminNavbar';
 import Axios from 'axios';
 import DataTable from 'react-data-table-component';
+import Pagination from '../../components/Pagination';
 
 const columns = [
 
 
     {
-        name: 'Title',
-        selector: 'title',
+        name: 'Order ID',
+        selector: 'uuid',
+        sortable: true,
+        cell: row => row.uuid.slice(0,7)
+    },
+
+    {
+        name: 'Customer',
+        selector: 'user.name',
+        sortable: true,
+    },
+
+    // {
+    //     name: 'Products',
+    //     selector: 'products',
+    //     sortable: true,
+    //     cell: row => <div className="d-flex flex-column">
+    //         {row.products.map((product) => (<div>{product.title} x{product.pivot.qty}</div>))}
+    //     </div>
+    // },
+    {
+        name: 'Total',
+        selector: 'total',
         sortable: true,
     },
 
     {
-        name: 'Price',
-        selector: 'price',
+        name: 'Payment',
+        selector: 'is_paid',
         sortable: true,
-        cell: row => row.price + ' $'
+        cell: row => row.is_paid ? <span className="badge badge-success">Paid</span> : <span className="badge badge-warning">Unpaid</span>
     },
+
     {
-        name: 'Maker',
-        selector: 'maker',
+        name: 'Shipping',
+        selector: 'is_delivered',
         sortable: true,
+        cell: row => row.is_delivered ? <span className="badge badge-success">Delivered</span> : <span className="badge badge-secondary">Shipped</span>
     },
-    {
-        name: 'Model',
-        selector: 'model',
-        sortable: true,
-    },
+
     {
         name: 'Created at',
         selector: 'created_at',
@@ -54,14 +74,15 @@ const Orders = () => {
     const [orders, setOrders] = useState([]);
 
 
-    const getOrders = () => {
-        Axios.get('/api/admin/orders')
-            .then(res => setOrders(() => res.data.data))
+    const getOrders = (page = null) => {
+        Axios.get(page ? page : '/api/admin/orders?page=1')
+            .then(res => setOrders(() => res.data))
             .catch(err => console.log(err))
     }
 
     useEffect(() => {
         getOrders();
+        return () => setOrders([])
 
     }, []);
 
@@ -80,28 +101,40 @@ const Orders = () => {
                         <div className="container-fluid">
                             <div className="fade-in">
                                 <div className="row mb-3">
-                                    <div className="col-12 d-flex justify-content-between">
+                                    <div className="col-12">
                                         <h2>Orders</h2>
-                                        <div>
-                                            <Link to="/admin/orders/create" className="btn btn-block btn-primary">Create</Link>
-                                        </div>
+
                                     </div>
                                 </div>
                                 <div className="row mb-5">
                                     <div className="col-12">
                                     <div>
 
+                                        {
 
-                                                <DataTable
+                                            Object.keys(orders).length
+
+                                            ?
+
+                                            <DataTable
                                                     defaultSortField="created_at"
                                                     striped={true}
                                                     noHeader={true}
-                                                    pagination={true}
-                                                    data={orders}
+                                                    data={orders.data}
+                                                    defaultSortAsc={false}
                                                     columns={columns}
                                                 />
 
+                                            :
 
+                                            'Loading...'
+
+                                        }
+
+
+
+
+                                            <Pagination meta={orders.meta} getPageData={(page) => getOrders(page)}/>
                                         </div>
                                     </div>
                                 </div>

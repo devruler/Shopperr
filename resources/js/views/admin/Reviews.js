@@ -4,25 +4,27 @@ import AdminSidebar from '../../partials/AdminSidebar';
 import AdminNavbar from '../../partials/AdminNavbar';
 import Axios from 'axios';
 import DataTable from 'react-data-table-component';
+import Pagination from '../../components/Pagination';
 
 const columns = [
     {
         name: 'Customer',
-        selector: 'name',
+        selector: 'user.name',
         sortable: true,
+        cell: row => <Link to={'/admin/users/' + row.user.id + '/edit'}>{row.user.name}</Link>
     },
 
     {
         name: 'Comment',
-        selector: 'title',
+        selector: 'comment',
         sortable: true,
     },
 
     {
-        name: 'Review',
-        selector: 'price',
+        name: 'Product',
+        selector: 'product',
         sortable: true,
-        cell: row => row.price + ' $'
+        cell: row => <a href={'/products/' + row.product.slug} target='_blank'>{row.product.title.slice(0, 40)}</a>
     },
 
     {
@@ -47,15 +49,15 @@ const Reviews = () => {
     const [reviews, setReviews] = useState([]);
 
 
-    const getReviews = () => {
-        Axios.get('/api/admin/reviews')
-            .then(res => setReviews(() => res.data.data))
+    const getReviews = (page) => {
+        Axios.get(page ? page : '/api/admin/reviews?page=1')
+            .then(res => setReviews(() => res.data))
             .catch(err => console.log(err))
     }
 
     useEffect(() => {
         getReviews();
-
+        return () => setReviews([])
     }, []);
 
     return (
@@ -80,16 +82,26 @@ const Reviews = () => {
                                     <div>
                                             {
 
+                                                Object.keys(reviews).length
+
+                                                ?
+
                                                 <DataTable
                                                     defaultSortField="created_at"
                                                     striped={true}
                                                     noHeader={true}
-                                                    pagination={true}
-                                                    data={reviews}
+                                                    data={reviews.data}
+                                                    defaultSortAsc={false}
                                                     columns={columns}
                                                 />
 
+                                                :
+
+                                                'Loading...'
+
                                             }
+
+                                            <Pagination meta={reviews.meta} getPageData={(page) => getReviews(page)}/>
                                         </div>
                                     </div>
                                 </div>

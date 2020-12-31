@@ -1,0 +1,11 @@
+#searchByOptions form{
+    width: 100%!important;
+}
+/* #searchByOptions .form-group{
+    margin-bottom: 0!important;
+} */
+#searchByOptions .form-control {
+    /* border-radius: 0%!important; */
+    border: 1px solid #D3AD2E;
+    min-width: 120px;
+}

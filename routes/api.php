@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\Admin\CategoryController as AdminCategory;
 use App\Http\Controllers\Api\v1\Admin\UserController as AdminUser;
 use App\Http\Controllers\Api\v1\Admin\OrderController as AdminOrder;
 use App\Http\Controllers\Api\v1\Admin\ReviewController as AdminReview;
+use App\Http\Controllers\Api\v1\Admin\DashboardController as AdminDashboard;
 
 use App\Http\Controllers\Api\v1\Client\ProductController as ClientProduct;
 use App\Http\Controllers\Api\v1\Client\CategoryController as ClientCategory;
@@ -36,10 +37,13 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::apiResource('categories', AdminCategory::class);
         Route::apiResource('customers', AdminUser::class);
         Route::apiResource('reviews', AdminReview::class);
+
+        Route::get('statistics', [AdminDashboard::class, 'getStatistics']);
     });
 
     Route::group(['prefix' => 'customer'], function () {
         Route::get('orders', [ClientOrder::class, 'customerOrders']);
+        Route::post('orders', [ClientOrder::class, 'store']);
         Route::get('reviews', [ClientReview::class, 'customerReviews']);
         Route::post('reviews', [ClientReview::class, 'store']);
     });
@@ -55,8 +59,7 @@ Route::get('/products/engines' , [ClientProduct::class, 'productsEngines']);
 
 // Products
 Route::get('products/search_ids', [ClientProduct::class, 'searchByIds']);
+Route::get('products/search_by_name', [ClientProduct::class, 'searchByName']);
 Route::apiResource('/products', ClientProduct::class)->only(['index', 'show']);
 Route::apiResource('/categories', ClientCategory::class)->only(['index', 'show']);
 Route::apiResource('/reviews', ClientReview::class)->only(['index', 'show']);
-
-

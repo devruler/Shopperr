@@ -1,2 +1,2 @@
 yellow: #D3AD2E
-dark gray: #343A40
+dark gray: #171919

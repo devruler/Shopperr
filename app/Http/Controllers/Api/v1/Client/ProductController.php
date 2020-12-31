@@ -40,6 +40,16 @@ class ProductController extends Controller
         return ResourceProduct::collection(Product::whereIn('id', $listOfIds)->with('category')->orderByDesc('created_at')->get());
     }
 
+    public function searchByName(Request $request){
+        $search_query = $request->name;
+
+        if(strlen($search_query)){
+            return ResourceProduct::collection(Product::where('title', 'LIKE', '%' . $search_query . '%')->limit(6)->get());
+        }
+
+        return response(['data' => []],200);
+    }
+
     public function productsMakers(){
         return response(['data' => Product::all()->pluck('maker')]);
     }

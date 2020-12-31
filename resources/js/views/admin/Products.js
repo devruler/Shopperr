@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AdminSidebar from '../../partials/AdminSidebar';
 import AdminNavbar from '../../partials/AdminNavbar';
 import Axios from 'axios';
 import DataTable from 'react-data-table-component';
+import Pagination from '../../components/Pagination'
 
 const columns = [
     {
         name: 'Image',
         selector: 'image',
-        cell: row => <div style={{height:'80px'}}><img src={'/images/products/' + row.image} className="h-100 rounded-circle"/></div>,
+        cell: row => <div style={{ height: '65px', padding: '5px' }}><img src={'/images/products/' + row.image} className="h-100 rounded-circle" /></div>,
     },
 
     {
@@ -25,15 +26,12 @@ const columns = [
         cell: row => row.price + ' $'
     },
     {
-        name: 'Maker',
-        selector: 'maker',
+        name: 'Category',
+        selector: 'category.slug',
         sortable: true,
+        cell: row => <Link to={'/admin/categories/' + row.category.slug + '/edit'}>{row.category.name}</Link>,
     },
-    {
-        name: 'Model',
-        selector: 'model',
-        sortable: true,
-    },
+
     {
         name: 'Created at',
         selector: 'created_at',
@@ -43,10 +41,10 @@ const columns = [
     {
         name: 'Actions',
         selector: 'actions',
-        cell: row => <div style={{height:'80px', wordBreak:'keep-all'}} className="d-flex justify-content-center align-items-center">
-                        <Link to={"/admin/products/" + row.id + "/edit"} className="btn btn-sm btn-secondary mr-3">Edit</Link>
-                        <button onClick={() => Axios.delete('/api/products/' + row.id).then(res => console.log(res).catch(err => console.log(err)))} className="btn btn-sm btn-danger">Delete</button>
-                    </div>,
+        cell: row => <div style={{ height: '80px', wordBreak: 'keep-all' }} className="d-flex justify-content-center align-items-center">
+            <Link to={"/admin/products/" + row.id + "/edit"} className="btn btn-sm btn-secondary mr-3">Edit</Link>
+            <button onClick={() => Axios.delete('/api/products/' + row.id).then(res => console.log(res).catch(err => console.log(err)))} className="btn btn-sm btn-danger">Delete</button>
+        </div>,
 
     },
 ];
@@ -58,14 +56,15 @@ const Products = () => {
     const [products, setProducts] = useState([]);
 
 
-    const getProducts = () => {
-        Axios.get('/api/products')
-            .then(res => setProducts(() => res.data.data))
+    const getProducts = (page = null) => {
+        Axios.get(page ? page : '/api/products?page=1')
+            .then(res => setProducts(() => res.data))
             .catch(err => console.log(err))
     }
 
     useEffect(() => {
         getProducts();
+        return () => setProducts([])
 
     }, []);
 
@@ -93,19 +92,29 @@ const Products = () => {
                                 </div>
                                 <div className="row mb-5">
                                     <div className="col-12">
-                                    <div>
+                                        <div>
                                             {
+
+                                                Object.keys(products).length
+
+                                                ?
 
                                                 <DataTable
                                                     defaultSortField="created_at"
                                                     striped={true}
                                                     noHeader={true}
-                                                    pagination={true}
-                                                    data={products}
+                                                    data={products.data}
+                                                    defaultSortAsc={false}
                                                     columns={columns}
                                                 />
 
+                                                :
+
+                                                'Loading...'
+
                                             }
+
+                                            <Pagination meta={products.meta} getPageData={(page) => getProducts(page)}></Pagination>
                                         </div>
                                     </div>
                                 </div>

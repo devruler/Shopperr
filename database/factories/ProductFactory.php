@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -28,7 +29,7 @@ class ProductFactory extends Factory
         return [
             'title' => $this->faker->sentence(),
             'slug' => Str::slug($this->faker->sentence()),
-            'image' => $this->faker->file('C:\Users\Reda\Desktop\auto-parts', public_path('images/products/'), false),
+            'image' => $this->faker->file('C:\Users\Admin\Desktop\autoparts', public_path('images/products/'), false),
             'maker' => $this->faker->word(),
             'model' => $this->faker->word(),
             'description' => $this->faker->paragraph(),

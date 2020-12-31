@@ -1,0 +1,14 @@
+.product-card{
+    overflow: hidden;
+}
+
+.product-category {
+    position: absolute;
+    top: -50px;
+    right: 10px;
+    border-radius: 0;
+}
+
+.basket-icon {
+    display: none;
+}

@@ -9,6 +9,8 @@
 
     @yield('styles')
 
+
+
     <title>Shopperr</title>
 
 </head>
@@ -17,10 +19,10 @@
 
     @yield('content')
 
-    @yield('scripts')
 
     <script src="{{asset('js/app.js')}}"></script>
 
+    @yield('scripts')
 
 </body>
 </html>

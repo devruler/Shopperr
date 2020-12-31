@@ -18,6 +18,7 @@ class CreateReviewsTable extends Migration
             $table->text('comment');
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

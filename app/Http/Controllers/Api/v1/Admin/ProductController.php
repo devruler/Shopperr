@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
@@ -18,7 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return ProductResource::collection(Product::orderByDesc('created_at')->get());
+        return ProductResource::collection(Product::orderByDesc('created_at')->paginate(10));
     }
 
     /**
@@ -52,10 +52,7 @@ class ProductController extends Controller
 
         // Image upload
         if($request->hasFile('img')){
-            $ext = $request->img->extension();
-            $imgName = Str::random(10) . '.' . $ext;
-            $request->img->move(public_path('images/products'), $imgName);
-            $product->image = $imgName;
+            $product->image = $this->saveImage($request->img);
         }
 
         $product->save();
@@ -104,16 +101,21 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
 
         // Update image
-        if($request->hasFile('img')){
+        if($request->hasFile('image')){
+
             $request->validate([
-                'img' => 'image|image|mimes:png,jpg,jpeg'
+                'image' => 'image|image|mimes:png,jpg,jpeg'
             ]);
-            if(File::delete(public_path("images/products/".$product->image))){
-                $ext = $request->img->extension();
-                $imgName = Str::random(10) . '.' . $ext;
-                $request->img->move(public_path('images/products'), $imgName);
-                $product->image = $imgName;
+
+            if(File::exists(public_path("images/products/".$product->image))){
+                if(File::delete(public_path("images/products/".$product->image))){
+                    $product->image = $this->saveImage($request->image);
+                }
+            }else{
+                $product->image = $this->saveImage($request->image);
             }
+
+
         }
 
         $product->save();
@@ -133,5 +135,12 @@ class ProductController extends Controller
         File::delete(public_path("images/products/".$product->image));
         $product->delete();
         return response(['message' => 'Product Has been succesfully deleted!'], 200);
+    }
+
+    protected function saveImage($img) {
+        $ext = $img->extension();
+        $imgName = Str::random(10) . '.' . $ext;
+        $img->move(public_path('images/products'), $imgName);
+        return $imgName;
     }
 }

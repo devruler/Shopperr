@@ -22,4 +22,3 @@ require('./views/client/CartPage');
 
 // Admin Views (Using React Router)
 require('./views/admin/Index.js');
-

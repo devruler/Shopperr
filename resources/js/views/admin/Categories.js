@@ -4,6 +4,7 @@ import AdminNavbar from '../../partials/AdminNavbar';
 import DataTable from 'react-data-table-component';
 import Axios from 'axios';
 import {Link} from 'react-router-dom';
+import Pagination from '../../components/Pagination';
 
 const columns = [
     {
@@ -41,14 +42,15 @@ const Categories = () => {
     const [categories, setCategories] = useState([]);
 
 
-    const getCategories = () => {
-        Axios.get('/api/categories')
-            .then(res => setCategories(() => res.data.data))
+    const getCategories = (page = null) => {
+        Axios.get(page ? page : '/api/admin/categories?page=1')
+            .then(res => setCategories(() => res.data))
             .catch(err => console.log(err))
     }
 
     useEffect(() => {
         getCategories();
+        return () => setCategories([])
 
     }, []);
 
@@ -65,8 +67,11 @@ const Categories = () => {
                         <div className="container-fluid">
                             <div className="fade-in">
                                 <div className="row mb-3">
-                                    <div className="col-12">
+                                    <div className="col-12 d-flex justify-content-between">
                                         <h2>Categories</h2>
+                                        <div>
+                                            <Link to="/admin/categories/create" className="btn btn-block btn-primary">Create</Link>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="row mb-5">
@@ -74,16 +79,24 @@ const Categories = () => {
                                     <div>
                                             {
 
+                                                Object.keys(categories).length ?
+
                                                 <DataTable
                                                     defaultSortField="created_at"
                                                     striped={true}
                                                     noHeader={true}
-                                                    pagination={true}
-                                                    data={categories}
+                                                    data={categories.data}
+                                                    defaultSortAsc={false}
                                                     columns={columns}
                                                 />
 
+                                                :
+
+                                                'Loading...'
+
                                             }
+
+                                            <Pagination meta={categories.meta} getPageData={(page) => getCategories(page)}/>
                                         </div>
                                     </div>
                                 </div>

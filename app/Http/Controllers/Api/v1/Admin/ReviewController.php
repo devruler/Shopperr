@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Review as ReviewResource;
@@ -17,7 +17,7 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        return ReviewResource::collection(Review::with(['product','user'])->orderByDesc('created_at')->get());
+        return ReviewResource::collection(Review::with(['product','user'])->orderByDesc('created_at')->paginate(10));
     }
 
     /**
@@ -39,7 +39,7 @@ class ReviewController extends Controller
      */
     public function show($id)
     {
-        return new ReviewResource(Review::where('id',$id)->with(['product', 'user'])->first());
+        return response(Review::where('id',$id)->with(['product', 'user'])->first(), 200);
     }
 
     /**
@@ -51,7 +51,17 @@ class ReviewController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $request->validate([
+            'comment' => 'required|string',
+        ]);
+
+        $reviewToUpdate = Review::findOrFail($id);
+        $reviewToUpdate->comment = $request->comment;
+
+        $reviewToUpdate->save();
+
+        return response(['message' => 'Review has been successfully updated!'], 200);
     }
 
     /**
@@ -62,7 +72,11 @@ class ReviewController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $review = Review::findOrFail($id);
+
+        $review->delete();
+
+        return response(['message' => 'Review has been successfully deleted'], 200);
     }
 
     public function customerReviews(){

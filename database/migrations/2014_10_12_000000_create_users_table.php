@@ -24,24 +24,27 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->boolean('is_admin')->default(false);
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 
         User::create([
-            [
                 'name' => 'admin',
                 'email' => 'admin@admin.com',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make('admin1234'),
                 'is_admin' => true
-            ],
-            [
-                'name' => 'customer',
-                'email' => 'customer@customer.com',
-                'email_verified_at' => Carbon::now(),
-                'password' => Hash::make('customer1234'),
-                'is_admin' => false
-            ]
+
+        ]);
+
+        User::create([
+
+            'name' => 'customer',
+            'email' => 'customer@customer.com',
+            'email_verified_at' => Carbon::now(),
+            'password' => Hash::make('customer1234'),
+            'is_admin' => false
+
         ]);
     }
 

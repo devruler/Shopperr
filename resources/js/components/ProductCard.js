@@ -1,9 +1,13 @@
+import gsap from 'gsap'
 import React, { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../Contexts/CartContext'
+import ProductCardStyles from './ProductCardStyles.css'
 
 const ProductCard = ({ product }) => {
 
     const [cartItems, setCartItems, getCartItems] = useContext(CartContext)
+
+    // const productCategory = useRef(null)
 
     const addToCart = () => {
 
@@ -37,12 +41,21 @@ const ProductCard = ({ product }) => {
 
     }
 
+    const toggleCategory = (toggler) => {
+        if (toggler) {
+            gsap.to('.category-' + product.id, { duration: .1, ease: 'power2.out', y: 50 })
+
+        } else {
+            gsap.to('.category-' + product.id, { duration: .1, ease: 'power2.in', y: -50 })
+        }
+    }
+
     return (
         <>
-            <div className="card">
+            <div className="card product-card rounded-0 border-0 shadow-sm">
 
-                <div className="card-body" style={{position: 'relative'}}>
-                    <a href={'/categories/' + product.category.slug} class="badge badge-secondary p-2" style={{ position: 'absolute', top: '10px', right: '10px' }}>{product.category.name}</a>
+                <div className="card-body" onMouseEnter={() => toggleCategory(true)} onMouseLeave={() => toggleCategory(false)}>
+                    <a href={'/categories/' + product.category.slug} className={'badge badge-secondary rounded-bottom p-2 product-category category-' + product.id} >{product.category.name}</a>
 
                     <div className="mb-3 d-flex align-items-center justify-content-center" style={{ height: '200px' }}>
                         <a href={'/products/' + product.slug}><img style={{ height: '200px' }} src={"/images/products/" + product.image} alt="" /></a>
@@ -50,10 +63,15 @@ const ProductCard = ({ product }) => {
                     </div>
                     <a href={'/products/' + product.slug} style={{ display: 'block', height: '80px' }}>
                         <h5>
-                            {product.title.slice(0,60)}
+                            {product.title.slice(0, 60)}
                         </h5></a>
                     <h6>$ {product.price}</h6>
-                    <button className="btn btn-primary rounded-0" onClick={() => addToCart()}>Add To Cart</button>
+
+                    <button
+                        className="btn btn-primary rounded-0 d-flex align-items-center shadow-sm"
+                        onClick={() => addToCart()}>
+                        Add To Cart
+                    </button>
 
                 </div>
 

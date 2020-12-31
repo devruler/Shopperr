@@ -1,0 +1,17 @@
+.cart-widget{
+    position: absolute;
+    top: 100%;
+    right: 30px;
+    width: 360px;
+    /* max-height: 100%; */
+    overflow: hidden;
+    z-index: 10;
+    display: none;
+}
+
+.product-img {
+    height: 50px;
+    width: 50px;
+    object-fit: contain;
+
+}

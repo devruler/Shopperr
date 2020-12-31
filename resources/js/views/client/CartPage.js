@@ -7,24 +7,38 @@ import { AuthProvider } from '../../Contexts/AuthContext'
 import { CartContext, CartProvider } from '../../Contexts/CartContext'
 import Footer from '../../partials/Footer'
 import Header from '../../partials/Header'
+import LoadingOverlay from 'react-loading-overlay';
+
 
 
 const CartPage = () => {
-
-
+    const [isLoading, setIsLoading] = useState(false)
 
     return (
         <>
             <AuthProvider>
                 <CartProvider>
 
-                    <Header></Header>
+                    <LoadingOverlay
+                        active={isLoading}
+                        spinner
+                        text='Loading..'
+                    >
 
-                    <Carousel></Carousel>
 
-                    <Cart />
 
-                    <Footer></Footer>
+                        <Header></Header>
+
+                        {/* <Carousel></Carousel> */}
+
+
+
+
+                        <Cart setIsLoading={(s) => setIsLoading(s)} />
+
+
+                        <Footer></Footer>
+                    </LoadingOverlay>
 
                 </CartProvider>
             </AuthProvider>

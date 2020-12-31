@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order as ResourcesOrder;
@@ -17,7 +17,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return ResourcesOrder::collection(Order::with(['user', 'products'])->paginate(10));
     }
 
     /**
@@ -39,7 +39,7 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        return response(Order::where('id',$id)->with(['user', 'products'])->first(), 200);
     }
 
     /**
@@ -62,10 +62,16 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $order = Order::findOrFail($id);
+
+        if($order->delete()){
+            return response(['message' => 'Order has been successfully deleted!'], 200);
+        }
+
+        return response(['message' => 'Order cannot be deleted. Try again later.'], 422);
     }
 
     public function customerOrders(){
-        return ResourcesOrder::collection(Order::where('user_id', Auth::user()->id)->orderByDesc('created_at')->get());
+        return ResourcesOrder::collection(Order::where('user_id', Auth::user()->id)->orderByDesc('created_at')->paginate(10));
     }
 }

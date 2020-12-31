@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Api\v1\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Notifications\OrderConfirmed;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -25,7 +29,24 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $newOrder = new Order;
+        $newOrder->total = $request->total;
+        $newOrder->is_delivered = false;
+        $newOrder->is_paid = $request->payment_method === 'Paypal' || $request->payment_method === 'Credit Card' ? True : False;
+        $newOrder->user_id = Auth()->id();
+        $newOrder->shipping_method = $request->shipping_method;
+        $newOrder->payment_method = $request->payment_method;
+        $newOrder->uuid = Str::uuid();
+        $newOrder->save();
+
+        foreach($request->products as $product){
+            $newOrder->products()->attach($product['id'], ['qty' => $product['qty']]);
+        }
+
+        $request->user()->notify(new OrderConfirmed($newOrder));
+
+        return response($newOrder, 200);
     }
 
     /**
@@ -59,6 +80,7 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+
     }
+
 }

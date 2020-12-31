@@ -24,6 +24,7 @@ class CreateProductsTable extends Migration
             $table->text('description');
             $table->decimal('price', 13, 2);
             $table->foreignId("category_id")->constrained()->cascadeOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

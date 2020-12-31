@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import AdminSidebar from '../../partials/AdminSidebar';
 import AdminNavbar from '../../partials/AdminNavbar';
 import Axios from 'axios';
@@ -8,6 +8,10 @@ import Axios from 'axios';
 const EditProduct = () => {
 
     const { id } = useParams();
+
+    const history = useHistory()
+
+    const [success, setSuccess] = useState(false)
 
     const [product, setProduct] = useState({ category: {}, errors: {} });
     const [categories, setCategories] = useState([]);
@@ -19,8 +23,8 @@ const EditProduct = () => {
     }
 
     const getProduct = () => {
-        Axios.get('/api/products/' + id)
-            .then(res => setProduct({ ...product,category_id: res.data.data.category.id, ...res.data.data }))
+        Axios.get('/api/admin/products/' + id)
+            .then(res => setProduct({ ...product, category_id: res.data.data.category.id, ...res.data.data }))
             .catch(err => console.log(err))
     }
 
@@ -36,15 +40,18 @@ const EditProduct = () => {
         form.append('model', product.model);
         form.append('engine', product.engine);
         form.append('price', product.price);
-        form.append('img', product.img);
+        form.append('image', product.image);
         form.append('category_id', product.category_id);
 
         Axios.post('/api/admin/products/' + id, form, {
             'content-type': 'multipart/form-data'
-        }).then(res => console.log(res))
+        }).then(res => setSuccess(true))
             .catch(err => {
-                if (err.status >= 400 && err.status < 500) {
-                    setProduct({ ...product, errors: err.response.data.errors });
+                if (err.response) {
+                    if (err.response.status >= 400 && err.response.status < 500) {
+                        setProduct({ ...product, errors: err.response.data.errors });
+
+                    }
                 }
             })
     }
@@ -56,7 +63,7 @@ const EditProduct = () => {
             img_preview.src = reader.result;
         }
         reader.readAsDataURL(e.target.files[0]);
-        setProduct({ ...product, img: e.target.files[0] });
+        setProduct({ ...product, image: e.target.files[0] });
     }
 
 
@@ -64,6 +71,14 @@ const EditProduct = () => {
         getCategories();
         getProduct();
     }, []);
+
+    useEffect(() => {
+        if (success) {
+            setTimeout(() => {
+                history.push('/admin/products')
+            }, 800)
+        }
+    }, [success])
 
     return (
         <>
@@ -130,10 +145,10 @@ const EditProduct = () => {
                                                         <div className="col-12 col-md-4">
                                                             <div className="form-group">
                                                                 <label htmlFor="image">Image</label>
-                                                                <input onChange={(e) => imgPreview(e)} type="file" accept=".png, .jpg, .jpeg" className="form-control-file" name="image" id="image" placeholder="Image" aria-describedby="image-msg" required />
-                                                                {product.errors.hasOwnProperty('img') && <small className="form-text text-danger">{product.errors.img[0]}</small>}
+                                                                <input onChange={(e) => imgPreview(e)} type="file" accept=".png, .jpg, .jpeg" className="form-control-file" name="image" id="image" placeholder="Image" aria-describedby="image-msg" />
+                                                                {product.errors.hasOwnProperty('image') && <small className="form-text text-danger">{product.errors.image[0]}</small>}
                                                                 <div className="w-100">
-                                                                    {product.img && <img className="w-100" src={(typeof product.img === 'string' ? '/images/products/' + product.img : product.img) || ''} id="img_preview" alt="" />}
+                                                                    {product.image && <img className="w-100 py-3" src={(typeof product.image === 'string' ? '/images/products/' + product.image : product.image) || ''} id="img_preview" alt="" />}
                                                                 </div>
                                                             </div>
                                                             <div className="form-group">
@@ -146,11 +161,28 @@ const EditProduct = () => {
 
                                                     <div className="row">
                                                         <div className="col">
-                                                            <div style={{ width: "100px" }}>
-                                                                <button type="submit" className="btn btn-block btn-primary">Update</button>
+                                                            <div className="d-flex">
+                                                                <div className="mr-2">
+                                                                    <button type="submit" className="btn btn-primary">Update</button>
+                                                                </div>
+                                                                <div>
+                                                                    <Link to={'/admin/products'} className="btn btn-block btn-secondary" >Go Back</Link>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    {
+                                                        success &&
+                                                        <div className="row mt-3">
+                                                            <div className="col">
+                                                                <div class="alert alert-success" role="alert">
+                                                                    <strong>Product has been successfully updated!</strong>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+
                                                 </form>
                                             </div>
                                         </div>

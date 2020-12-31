@@ -15,7 +15,7 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->decimal('total',2);
+            $table->decimal('total', 13, 2);
             $table->boolean('is_delivered')->default(false);
             $table->boolean('is_paid')->default(false);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();

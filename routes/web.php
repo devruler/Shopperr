@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -39,7 +40,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','is.admin']], functio
 });
 
 // Customer area
-Route::group(['prefix' => 'customer', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'customer', 'middleware' => ['auth', 'is.customer']], function () {
     Route::get('/dashboard', function () {
         return view('app.customer.index');
     });
@@ -49,3 +50,6 @@ Route::group(['prefix' => 'customer', 'middleware' => 'auth'], function () {
 Route::get('/cart', function() {
     return view('app.cart');
 });
+
+// Checkout with Paypal
+Route::post('/paypal/process-payment', [PaymentController::class, 'makePayment']);
