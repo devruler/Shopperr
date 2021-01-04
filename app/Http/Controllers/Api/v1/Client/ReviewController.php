@@ -30,7 +30,7 @@ class ReviewController extends Controller
     {
         $review = new Review;
         $review->comment = $request->comment;
-        $review->user_id = Auth::user()->id;
+        $review->user_id = Auth::id();
         $review->product_id = $request->product_id;
 
         $review->save();
@@ -71,5 +71,15 @@ class ReviewController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    /**
+     * Get currently authenticated customer reviews.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function customerReviews(){
+        return ResourcesReview::collection(Review::where('user_id', Auth::id())->orderByDesc('created_at')->paginate(10));
     }
 }

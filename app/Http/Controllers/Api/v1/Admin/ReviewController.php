@@ -15,9 +15,13 @@ class ReviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ReviewResource::collection(Review::with(['product','user'])->orderByDesc('created_at')->paginate(10));
+        if($request->trashed){
+            return ReviewResource::collection(Review::onlyTrashed()->with(['product','user'])->orderByDesc('created_at')->paginate(10));
+        }else{
+            return ReviewResource::collection(Review::with(['product','user'])->orderByDesc('created_at')->paginate(10));
+        }
     }
 
     /**
@@ -52,6 +56,11 @@ class ReviewController extends Controller
     public function update(Request $request, $id)
     {
 
+        if($request->restore){
+            $review = Review::onlyTrashed()->where('id', $id)->restore();
+            return response(compact('review'), 200);
+        }
+
         $request->validate([
             'comment' => 'required|string',
         ]);
@@ -70,8 +79,14 @@ class ReviewController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
+
+        if($request->force_delete){
+            $review = Review::onlyTrashed()->where('id', $id)->forceDelete();
+            return response(compact('review'), 200);
+        }
+
         $review = Review::findOrFail($id);
 
         $review->delete();

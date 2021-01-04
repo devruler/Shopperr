@@ -25,7 +25,8 @@ class ReviewFactory extends Factory
     {
         return [
             'comment' => $this->faker->sentence(),
-            'user_id' => $this->faker->randomElement(User::pluck('id')),
+            // 'user_id' => $this->faker->randomElement(User::pluck('id')),
+            'user_id' => 2,
             'product_id' => $this->faker->randomElement(Product::pluck('id')),
 
         ];

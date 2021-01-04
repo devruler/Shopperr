@@ -259,15 +259,13 @@ const Cart = ({ setIsLoading }) => {
                                     <div className="row">
                                         <div className="col">
                                             <div className="table-responsive-md w-100">
-                                                <table className="table">
+                                                <table className="table w-100">
                                                     <thead>
                                                         <tr>
                                                             <th className="border-0 text-sm" scope="col"></th>
                                                             <th className="border-0 text-sm" scope="col">Name</th>
                                                             <th className="border-0 text-sm" scope="col">Category</th>
-                                                            <th className="border-0 text-sm" scope="col">Maker</th>
-                                                            <th className="border-0 text-sm" scope="col">Model</th>
-                                                            <th className="border-0 text-sm" scope="col">Engine</th>
+                                                            {/* <th className="border-0 text-sm" scope="col">Maker</th> */}
                                                             <th className="border-0 text-sm" scope="col">Qty</th>
                                                             <th className="border-0 text-sm" scope="col">Amount</th>
                                                         </tr>
@@ -278,14 +276,12 @@ const Cart = ({ setIsLoading }) => {
                                                             cartItems && cartItems.map((item, i) => {
                                                                 return (
                                                                     <tr key={item.id}>
-                                                                        <td style={{ height: '80px' }}>
+                                                                        <td style={{ height: '90px' }}>
                                                                             <img className="d-block h-100 mx-auto" src={'/images/products/' + item.image} alt="" />
                                                                         </td>
-                                                                        <td>{item.title}</td>
+                                                                        <td><a href={'/products/' + item.slug}>{item.title}</a></td>
                                                                         <td>{item.category.name}</td>
-                                                                        <td>{item.maker}</td>
-                                                                        <td>{item.model}</td>
-                                                                        <td>{item.engine}</td>
+                                                                        {/* <td>{item.maker}</td> */}
                                                                         <td className="d-flex align-items-center"><input onChange={setItemQty(i)} value={item.qty || 1} className="form-control mr-1" type="number" min="1" style={{ width: '50px' }} disabled={checkoutStep === 1 ? false : true} /> x</td>
                                                                         <td>{item.amount}$</td>
 
@@ -296,7 +292,7 @@ const Cart = ({ setIsLoading }) => {
 
                                                         <tr>
 
-                                                            <td colSpan="6"></td>
+                                                            <td colSpan="3"></td>
                                                             <td colSpan="1">Total: </td>
                                                             <td colSpan="1">{cartItems && order.total}$</td>
 

@@ -31,7 +31,7 @@ class ProductController extends Controller
             ->paginate(8));
         }
 
-        return ResourceProduct::collection(Product::with('category')->orderByDesc('created_at')->paginate(8));
+        return ResourceProduct::collection(Product::with('category')->orderByDesc('created_at')->paginate(12));
     }
 
     public function searchByIds(Request $request){

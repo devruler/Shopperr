@@ -16,9 +16,10 @@ require('./bootstrap');
 // Client side views
 require('./views/client/Index.js');
 require('./views/client/ProductPage.js');
-require('./views/client/customer/CustomerDashboard');
 require('./views/client/CartPage');
 
+// Customer views (Using react Router)
+require('./views/client/customer/Index');
 
 // Admin Views (Using React Router)
 require('./views/admin/Index.js');

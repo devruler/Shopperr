@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Order as ResourcesOrder;
 use App\Models\Order;
 use App\Notifications\OrderConfirmed;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -81,6 +82,10 @@ class OrderController extends Controller
     public function destroy($id)
     {
 
+    }
+
+    public function customerOrders(){
+        return ResourcesOrder::collection(Order::where('user_id', Auth::id())->orderByDesc('created_at')->paginate(10));
     }
 
 }

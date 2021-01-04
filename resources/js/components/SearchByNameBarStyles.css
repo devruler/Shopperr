@@ -1,10 +1,10 @@
 .search-icon{
     color: #D3AD2E;
 }
-.search-btn:hover{
+/* .search-btn:hover{
     transform: scale(1.2);
     transition: .5s ease;
-}
+} */
 .search-bar {
     position: relative;
 }

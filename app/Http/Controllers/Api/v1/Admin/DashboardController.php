@@ -18,22 +18,29 @@ class DashboardController extends Controller
      */
     public function getStatistics()
     {
-        $statistics = [];
 
-        $orders_count = Order::whereBetween('created_at',[Carbon::today()->floorDay(),Carbon::today()->ceilDay()])->count();
-        $customers_count = User::where('is_admin', 0)->whereBetween('created_at',[Carbon::today()->floorDay(),Carbon::today()->ceilDay()])->count();
-        $reviews_count = Review::whereBetween('created_at',[Carbon::today()->floorDay(),Carbon::today()->ceilDay()])->count();
-        $revenue = Order::whereBetween('created_at',[Carbon::today()->floorDay(),Carbon::today()->ceilDay()])->sum('total');
+        $orders_count = Order::whereBetween('created_at',[Carbon::now()->startOfDay(),Carbon::now()->endOfDay()])->count();
+        $customers_count = User::where('is_admin', 0)->whereBetween('created_at',[Carbon::now()->startOfDay(),Carbon::now()->endOfDay()])->count();
+        $reviews_count = Review::whereBetween('created_at',[Carbon::now()->startOfDay(),Carbon::now()->endOfDay()])->count();
+
+        $todayRevenue = Order::whereBetween('created_at',[Carbon::now()->startOfDay(),Carbon::now()->endOfDay()])->sum('total');
+        $weekRevenue = Order::whereBetween('created_at',[Carbon::now()->startOfWeek(),Carbon::now()->endOfWeek()])->sum('total');
+        $MonthRevenue = Order::whereBetween('created_at',[Carbon::now()->startOfMonth(),Carbon::now()->endOfMonth()])->sum('total');
+        $allTimeRevenue = Order::sum('total');
 
         $statistics = [
             'orders_count' => $orders_count,
             'customers_count' => $customers_count,
             'reviews_count' => $reviews_count,
-            'revenue' => $revenue,
+            'revenue' => [
+                'today' => $todayRevenue,
+                'week' => $weekRevenue,
+                'month' => $MonthRevenue,
+                'allTime' => $allTimeRevenue,
+            ],
         ];
 
-        dd($statistics);
-
+        return response($statistics, 200);
     }
 
 

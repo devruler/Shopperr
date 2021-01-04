@@ -1,6 +1,7 @@
 import Axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../Contexts/AuthContext'
+import Pagination from './Pagination'
 
 const ProductReviews = ({ productId }) => {
 
@@ -10,15 +11,31 @@ const ProductReviews = ({ productId }) => {
 
     const [comment, setComment] = useState('')
 
+    const [error, setError] = useState('')
+
+    const [success, setSuccess] = useState(false)
+
     const storeReview = () => {
-        Axios.post('/api/customer/reviews', { comment: comment, product_id: productId })
+        let products = user.orders.map(order => order.products).flat()
+        if (!user) {
+            setError('You\'re not logged in to post a review!')
+        } else if (!products.some((product) => product.id === productId)) {
+            console.log(products)
+            setError('You should buy this product to post a review.')
+        } else {
+            Axios.post('/api/customer/reviews', { comment: comment, product_id: productId })
             .then(res => setReviews([...reviews, res.data.review]))
             .catch(err => console.log(err))
-            .finally(() => setComment(''))
+            .finally(() => {
+                setComment('')
+                setSuccess(true)
+            })
+        }
+
     }
 
-    const getReviews = () => {
-        Axios.get('/api/reviews')
+    const getReviews = (page = '/api/reviews?page=1') => {
+        Axios.get(page)
             .then(res => setReviews(res.data))
             .catch(err => console.log(err))
     }
@@ -37,7 +54,7 @@ const ProductReviews = ({ productId }) => {
 
                     {Object.keys(reviews).length && reviews.data.map(review => {
                         return (
-                            <div>
+                            <div key={review.id}>
                                 <p>{review.comment}</p>
                                 <small className="text-muted">Posted by {review.user.name} on {new Date(review.created_at).toLocaleString()}</small>
                                 <hr />
@@ -45,26 +62,33 @@ const ProductReviews = ({ productId }) => {
                         )
                     })}
 
-                    {/* <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-                    <small className="text-muted">Posted by Anonymous on 3/1/17</small>
-                    <hr />
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-                    <small className="text-muted">Posted by Anonymous on 3/1/17</small>
-                    <hr />
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-                    <small className="text-muted">Posted by Anonymous on 3/1/17</small>
+                    <Pagination meta={reviews.meta} getPageData={(page) => getReviews(page)} />
 
-                    <hr /> */}
 
                     <div className="form-group">
                         <label>Review</label>
-                        <textarea onChange={(e) => setComment(e.target.value)} className="form-control" name="comment" id="comment" rows="3"></textarea>
+                        <textarea onChange={(e) => setComment(e.target.value)} value={comment || ''} className="form-control" name="comment" id="comment" rows="3"></textarea>
                     </div>
 
-                    {!user && <small className="text-danger">You must be logged in to add a review.</small>}
+
+
                     <br />
 
-                    <button className="btn btn-secondary rounded-0" onClick={() => storeReview()} disabled={!user}>Leave a Review</button>
+                    <button className="btn btn-secondary rounded-0" onClick={() => storeReview()} disabled={comment.length == ''}>Leave a Review</button>
+
+                    {
+                    error.length > 0 &&
+                    <div className="alert alert-danger mt-3" role="alert">
+                        <strong>{error}</strong>
+                    </div>
+                    }
+
+                    {
+                        success &&
+                        <div className="alert alert-success mt-3" role="alert">
+                            <strong>Review has been successfully posted!</strong>
+                        </div>
+                    }
 
 
                 </div>

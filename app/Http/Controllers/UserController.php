@@ -66,7 +66,7 @@ class UserController extends Controller
     }
 
     public function getAuthenticatedUser(){
-        $user = Auth::check() ? Auth::user() : null;
+        $user = Auth::check() ? User::where('id', Auth::id())->with('orders.products')->first() : null;
         return response(compact('user'), 200);
     }
 }

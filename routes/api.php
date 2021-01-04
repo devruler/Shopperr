@@ -39,6 +39,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::apiResource('reviews', AdminReview::class);
 
         Route::get('statistics', [AdminDashboard::class, 'getStatistics']);
+
+        // Route::put('/categories/{id}/restore', [AdminCategory::class, 'restoreCategory']);
     });
 
     Route::group(['prefix' => 'customer'], function () {

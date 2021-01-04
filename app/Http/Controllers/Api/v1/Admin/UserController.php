@@ -18,9 +18,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ResourcesUser::collection(User::where('is_admin', false)->withCount(['orders', 'reviews'])->with(['orders', 'reviews'])->orderByDesc('created_at')->paginate(10));
+        return $request->trashed ?
+        ResourcesUser::collection(User::onlyTrashed()->where('is_admin', false)->withCount(['orders', 'reviews'])->with(['orders', 'reviews'])->orderByDesc('created_at')->paginate(10))
+        :
+        ResourcesUser::collection(User::where('is_admin', false)->withCount(['orders', 'reviews'])->with(['orders', 'reviews'])->orderByDesc('created_at')->paginate(10))
+        ;
     }
 
     /**
@@ -89,6 +93,12 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        if($request->restore){
+            $user = User::onlyTrashed()->where('id', $id)->restore();
+            return response(compact('user'), 200);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:255'],
@@ -127,9 +137,17 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        if($request->force_delete){
+            $user = User::onlyTrashed()->where('id', $id)->forceDelete();
+            return response(compact('user'), 200);
+        }
+
+        $user = User::findOrFail($id)->delete();
+
+        return response(compact('user'), 200);
+
     }
 
     public function getUserProfile(){

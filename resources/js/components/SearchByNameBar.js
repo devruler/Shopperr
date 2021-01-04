@@ -18,9 +18,6 @@ const SearchBarByName = () => {
 
 
         new Promise ((resolve, rej) => {
-
-
-
             setTimeout(() => {
                 setIsFetching(true)
                 Axios.get('/api/products/search_by_name?name=' + productName)
@@ -28,8 +25,6 @@ const SearchBarByName = () => {
                     setResults(res.data.data)
                 }).catch(() => console.log(err))
                 .finally(() => resolve())
-
-
             }, 700)
         }).then(() => setIsFetching(false) )
 
@@ -37,9 +32,6 @@ const SearchBarByName = () => {
     }
 
     useEffect(() => {
-
-
-
         if (productName.length > 2) {
             getSearchResults()
         }
@@ -74,7 +66,9 @@ const SearchBarByName = () => {
                 { isFetching && <div className="spinner-grow"></div> }
 
                 <div className="input-group-append">
-                    <button className="btn btn-outline-secondary search-btn" type="button" id="button-addon2"><i className="fa fa-search search-icon" aria-hidden="true"></i></button>
+                    <button className="btn btn-outline-default search-btn" type="button" id="button-addon2">
+                        <i className="fa fa-search search-icon" aria-hidden="true"></i>
+                    </button>
                 </div>
 
             </div>

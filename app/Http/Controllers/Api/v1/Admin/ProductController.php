@@ -16,9 +16,13 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ProductResource::collection(Product::orderByDesc('created_at')->paginate(10));
+        if($request->trashed){
+            return ProductResource::collection(Product::onlyTrashed()->orderByDesc('created_at')->paginate(10));
+        }else{
+            return ProductResource::collection(Product::orderByDesc('created_at')->paginate(10));
+        }
     }
 
     /**
@@ -80,6 +84,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if($request->restore){
+            $product = Product::onlyTrashed()->where('id', $id)->restore();
+            return response(compact('product'), 200);
+        }
+
         $request->validate([
             'title' => 'required|string|min:5|max:80',
             'description' => 'required|string',
@@ -129,8 +138,13 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
+        if($request->force_delete){
+            $product = Product::onlyTrashed()->where('id', $id)->forceDelete();
+            return response(compact('product'));
+        }
+
         $product = Product::findOrFail($id);
         File::delete(public_path("images/products/".$product->image));
         $product->delete();

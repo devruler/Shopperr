@@ -80,7 +80,7 @@ const AdminSidebar = () => {
                     </li>
                 </ul>
 
-                <button className="c-sidebar-minimizer c-className-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>
+                <button className="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>
 
                 <button onClick={hideSidebar} className="mt-auto btn btn-default py-3 d-block d-lg-none" style={{color: '#C7C7C7'}} type="button" >
                     <svg id="cis-chevron-left" viewBox="0 0 512 512" height="32">

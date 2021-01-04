@@ -15,9 +15,13 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return CategoryResource::collection(Category::orderByDesc('created_at')->withCount('products')->paginate(10));
+        if($request->trashed){
+            return CategoryResource::collection(Category::onlyTrashed()->orderByDesc('created_at')->withCount('products')->paginate(10));
+        }else{
+            return CategoryResource::collection(Category::orderByDesc('created_at')->withCount('products')->paginate(10));
+        }
     }
 
     /**
@@ -61,6 +65,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        if($request->restore){
+            return Category::onlyTrashed()->where('id', $id)->restore();
+        }
+
+
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -82,8 +93,12 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
+        if($request->force_delete){
+            return Category::onlyTrashed()->where('id', $id)->forceDelete();
+        }
+
 
         $category = Category::findOrFail($id);
         $category->delete();

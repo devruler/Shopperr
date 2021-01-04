@@ -29,7 +29,8 @@ class OrderFactory extends Factory
             'total' => $this->faker->randomFloat(2,10, 1000),
             'is_delivered' => $this->faker->randomElement([0,1]),
             'is_paid' => $this->faker->randomElement([0,1]),
-            'user_id' => $this->faker->randomElement(User::pluck('id')),
+            // 'user_id' => $this->faker->randomElement(User::pluck('id')),
+            'user_id' => 2,
             'shipping_method' => $this->faker->randomElement(['Standard Shipping']),
             'payment_method' => $this->faker->randomElement(['Paypal']),
         ];
