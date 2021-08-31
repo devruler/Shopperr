@@ -11,14 +11,16 @@ class OrderConfirmed extends Notification
 {
     use Queueable;
 
+    private $order;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($order)
     {
-        //
+        $this->order = $order;
     }
 
     /**
@@ -46,7 +48,7 @@ class OrderConfirmed extends Notification
                     ->line('Your order #' . substr($this->order->uuid, 0, 7) . 'has been successfully confirmed.' )
                     ->line('The item(s) will be packed and shipped as soon as possible. You will receive a notification from us as soon as the item (s) are be ready to be delivered.' )
                     ->line('Thank you for purchasing at ' . Env('APP_NAME') . '.' )
-                    ->action('Check Order', url('/customer/orders/' . $this->order->id));
+                    ->action('Check Order', url('/customer/dashboard'));
     }
 
     /**

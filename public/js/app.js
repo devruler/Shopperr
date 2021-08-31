@@ -80779,7 +80779,7 @@ var Cart = function Cart(_ref) {
     type: "submit",
     className: "btn btn-primary rounded-0",
     disabled: checkoutStep < 3 ? false : true
-  }, user ? 'Confirm' : 'Sign up', " & Proceed")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, user ? 'Confirm' : 'Sign up', " & Proceed")))), window.paypal && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row",
     style: {
       display: "none"
@@ -81102,17 +81102,17 @@ var Navbar = function Navbar() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_SearchByNameBar__WEBPACK_IMPORTED_MODULE_7__["default"], null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", {
     className: "navbar-nav ml-auto left-nav"
   }, user ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-    "class": "dropdown "
+    className: "dropdown "
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
     href: "#",
-    "class": "btn btn-link nav-link rounded-0 dropdown-toggle",
+    className: "btn btn-link nav-link rounded-0 dropdown-toggle",
     type: "a",
     id: "dropdownMenuButton",
     "data-toggle": "dropdown",
     "aria-haspopup": "true",
     "aria-expanded": "false"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
-    "class": "fas fa-user    "
+    className: "fas fa-user    "
   }), " Account"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     className: "dropdown-menu rounded-0",
     "aria-labelledby": "dropdownMenuButton"
@@ -81139,7 +81139,7 @@ var Navbar = function Navbar() {
     className: "nav-link",
     href: "/cart"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
-    "class": "fas fa-shopping-cart mr-1"
+    className: "fas fa-shopping-cart mr-1"
   }), "Cart - ", cartItems && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("small", null, cartItems.length + ' Items')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", {
     className: "navbar-nav"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", {
@@ -86728,7 +86728,10 @@ var order_columns = [{
 {
   name: 'Total',
   selector: 'total',
-  sortable: true
+  sortable: true,
+  cell: function cell(row) {
+    return '$' + row.total;
+  }
 }, {
   name: 'Payment',
   selector: 'is_paid',
@@ -86752,7 +86755,7 @@ var order_columns = [{
     }, "Shipped");
   }
 }, {
-  name: 'Created at',
+  name: 'Ordered at',
   selector: 'created_at',
   sortable: true,
   cell: function cell(row) {
@@ -86969,6 +86972,7 @@ var Dashboard = function Dashboard() {
     noHeader: true,
     pagination: false,
     data: orders.data,
+    defaultSortAsc: false,
     columns: order_columns
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Pagination__WEBPACK_IMPORTED_MODULE_9__["default"], {
     meta: orders.meta,
@@ -86991,6 +86995,7 @@ var Dashboard = function Dashboard() {
     striped: true,
     noHeader: true,
     pagination: false,
+    defaultSortAsc: false,
     data: reviews.data,
     columns: review_columns
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Pagination__WEBPACK_IMPORTED_MODULE_9__["default"], {

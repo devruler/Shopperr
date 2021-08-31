@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Notifications\OrderConfirmed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class OrderController extends Controller
@@ -45,7 +46,7 @@ class OrderController extends Controller
             $newOrder->products()->attach($product['id'], ['qty' => $product['qty']]);
         }
 
-        $request->user()->notify(new OrderConfirmed($newOrder));
+        Notification::send($request->user(), new OrderConfirmed($newOrder));
 
         return response($newOrder, 200);
     }

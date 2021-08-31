@@ -33,7 +33,9 @@ const order_columns = [
     {
         name: 'Total',
         selector: 'total',
-        sortable: true,
+        sortable: true
+        ,
+        cell: row => '$' + row.total
     },
 
     {
@@ -51,7 +53,7 @@ const order_columns = [
     },
 
     {
-        name: 'Created at',
+        name: 'Ordered at',
         selector: 'created_at',
         sortable: true,
         cell: row => new Date(row.created_at).toDateString()
@@ -197,6 +199,7 @@ const Dashboard = () => {
                                                     noHeader={true}
                                                     pagination={false}
                                                     data={orders.data}
+                                                    defaultSortAsc={false}
                                                     columns={order_columns}
                                                 />
 
@@ -213,6 +216,7 @@ const Dashboard = () => {
                                                     striped={true}
                                                     noHeader={true}
                                                     pagination={false}
+                                                    defaultSortAsc={false}
                                                     data={reviews.data}
                                                     columns={review_columns}
                                                 />

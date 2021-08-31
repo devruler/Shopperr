@@ -375,11 +375,13 @@ const Cart = ({ setIsLoading }) => {
 
 
 
+                                    {
+                                    window.paypal &&
                                     <div className="row" style={{ display: "none" }} id="paypal-container">
                                         <div className="col d-flex justify-content-center">
                                             <div id="paypal-button-container"></div>
                                         </div>
-                                    </div>
+                                    </div>}
 
 
                                 </div>

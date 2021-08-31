@@ -75,8 +75,8 @@ export const Navbar = () => {
                                     user
                                         ?
                                         <>
-                                            <div class="dropdown ">
-                                                <a href="#" class="btn btn-link nav-link rounded-0 dropdown-toggle" type="a" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user    "></i> Account</a>
+                                            <div className="dropdown ">
+                                                <a href="#" className="btn btn-link nav-link rounded-0 dropdown-toggle" type="a" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="fas fa-user    "></i> Account</a>
 
                                                 <div className="dropdown-menu rounded-0" aria-labelledby="dropdownMenuButton">
                                                         <a className="dropdown-item my-2 my-lg-0" href="/admin">Dashboard</a>
@@ -102,7 +102,7 @@ export const Navbar = () => {
 
                                 <li className="nav-item my-2 my-lg-0 d-block d-lg-none">
                                     <a className="nav-link" href="/cart">
-                                        <i class="fas fa-shopping-cart mr-1"></i>
+                                        <i className="fas fa-shopping-cart mr-1"></i>
                                          Cart - {cartItems && <small>{cartItems.length + ' Items'}</small>}
                                     </a>
                                 </li>
